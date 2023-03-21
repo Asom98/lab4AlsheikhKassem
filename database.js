@@ -1,16 +1,22 @@
 const sqlite3 = require('sqlite3').verbose();
 
-const db = new sqlite3.Database('dbLab3.db');
+const db = new sqlite3.Database('dbLab4.db');
 
 async function createTable(){
     db.serialize(() => {
         db.run(`
         CREATE TABLE Users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            role TEXT NOT NULL,
             username TEXT NOT NULL,
             password TEXT NOT NULL
         )`)
     })    
+}
+
+function deleteUsersTable() {
+  db.run('DROP TABLE IF EXISTS Users');
+  db.close();
 }
 
 async function registerUser(userName, password){
@@ -55,10 +61,10 @@ async function getPassByUserName(username){
           resolve(row.password)
         } else {
           resolve(null)
-        }
-      });
+       }
     });
-  }
+  });
+}
 
 module.exports = {registerUser, userExists, getPassByUserName, validateLogIn}
 
