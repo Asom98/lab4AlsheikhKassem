@@ -16,7 +16,7 @@ app.get('/', (req, res)=>{
 })
 
 app.get('/admin', (req, res)=>{
-    res.redirect('/login')
+    res.render('admin.ejs')
 })
 
 app.get('/login', (req, res)=>{

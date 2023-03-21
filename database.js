@@ -101,7 +101,6 @@ async function getPassByUserName(username){
     });
   });
 }
-printAllUsers()
 
 module.exports = {registerUser, userExists, getPassByUserName, validateLogIn}
 
