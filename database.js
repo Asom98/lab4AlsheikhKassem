@@ -6,12 +6,48 @@ async function createTable(){
     db.serialize(() => {
         db.run(`
         CREATE TABLE Users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id TEXT PRIMARY KEY,
             role TEXT NOT NULL,
             username TEXT NOT NULL,
             password TEXT NOT NULL
         )`)
     })    
+}
+
+async function addUsers() {
+  const users = [
+    { id: 'id1', username: 'User1', role: 'student', password: 'password' },
+    { id: 'id2', username: 'User2', role: 'student', password: 'password2' },
+    { id: 'id3', username: 'User3', role: 'teacher', password: 'password3' },
+    { id: 'admin', username: 'Admin', role: 'admin', password: 'admin' }
+  ];
+
+  for (const user of users) {
+    await new Promise((resolve, reject) => {
+      db.run(
+        'INSERT INTO Users (id, role, username, password) VALUES (?, ?, ?, ?)',
+        [user.id, user.role, user.username, user.password],
+        (err) => {
+          if (err) reject(err);
+          else resolve();
+        }
+      );
+    });
+  }
+}
+
+async function getAllUsers() {
+  return new Promise((resolve, reject) => {
+    db.all('SELECT * FROM Users', (err, rows) => {
+      if (err) reject(err);
+      else resolve(rows);
+    });
+  });
+}
+
+async function printAllUsers() {
+  const users = await getAllUsers();
+  console.log(users);
 }
 
 function deleteUsersTable() {
@@ -65,6 +101,7 @@ async function getPassByUserName(username){
     });
   });
 }
+printAllUsers()
 
 module.exports = {registerUser, userExists, getPassByUserName, validateLogIn}
 
