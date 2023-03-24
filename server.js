@@ -95,18 +95,18 @@ app.post('/login', async (req, res) => {
 app.post('/identify', async (req, res) => {
 
     const { username, password } = req.body
+    const user = await getUserByName(username);
     const token = jwt.sign(password, process.env.TOKEN);
     currentKey = token;
     currentPassword = password;
     currentUser = username
-    
-    if (!await validateLogIn(username, password)) {
-        console.log(`Redirecting to /identify for userName=${username}`);
-        res.redirect('/identify');
+
+    if (user && bcrypt.compareSync(password, user.password)) {
+        res.redirect(`/granted`);
     } else {
-        console.log(`Redirecting to /granted for userName=${username}`);
-        res.redirect('/granted')
+        res.redirect('/identify')
     }
+    
 });
 
 app.post('/register', async (req, res) => {
@@ -119,7 +119,7 @@ app.post('/register', async (req, res) => {
         try {
             await registerUser(id, role, username, hash);
             console.log('user registered successfully!!');
-            res.redirect('/identify');
+            res.redirect('/login');
         } catch (err) {
             console.error(err);
             res.sendStatus(500);

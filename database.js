@@ -16,10 +16,10 @@ async function createTable(){
 
 async function addUsers() {
   const users = [
-    { id: 'id1', username: 'User1', role: 'student', password: 'password' },
-    { id: 'id2', username: 'User2', role: 'student', password: 'password2' },
-    { id: 'id3', username: 'User3', role: 'teacher', password: 'password3' },
-    { id: 'admin', username: 'Admin', role: 'admin', password: 'admin' }
+    { id: 'id1', username: 'User1', role: 'student', password: '$2b$10$5kiCfKtxb4NSAJMzqmdolOrnMxXP0ut6iualGyIKiGyCxYeSxIYMC' },
+    { id: 'id2', username: 'User2', role: 'student', password: '$2b$10$gEkR/3wjV.IC897R0jjqp.Jz8fyBTJdjQGBpOpWYf8Q7ljCQqP0Du' },
+    { id: 'id3', username: 'User3', role: 'teacher', password: '$2b$10$rDkR.qe97BTjsk4h7gm81O1ghOswzXqX5uYCQg0N3aug94QpYbzxi' },
+    { id: 'admin', username: 'Admin', role: 'admin', password: '$2b$10$X7ELxIES4qcJcITCInxgt.yKQebOfVsjUNbpvO6t6k/QltDztd4dy' }
   ];
 
   for (const user of users) {
@@ -149,7 +149,7 @@ async function getUserByName(username) {
     );
   });
 }
-printAllUsers()
+
 
 module.exports = {registerUser, userExists, getPassByUserName, validateLogIn, getAllUsers, getUser, getUserById, getUserByName}
 
