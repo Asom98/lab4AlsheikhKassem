@@ -55,6 +55,15 @@ function deleteUsersTable() {
   db.close();
 }
 
+async function getUser(username) {
+  return new Promise((resolve, reject) => {
+    db.get('SELECT * FROM Users WHERE username = ?', [username], (err, row) => {
+      if (err) reject(err);
+      else resolve(row);
+    });
+  });
+}
+
 async function registerUser(userName, password){
     const sql = 'INSERT INTO users (username, password) VALUES ($username, $password)'
     const params ={$username: userName, $password: password}
@@ -67,20 +76,28 @@ async function registerUser(userName, password){
 }
 
 async function userExists(username) {
-	return new Promise((resolve, reject) => {
-		db.all(`SELECT * FROM Users WHERE username = $username `, { $username: username }, (error, rows) => {
-			if( error ) reject(error)
-			else resolve(rows.length > 0)
-		})
-	})
+  return new Promise((resolve, reject) => {
+    db.all(
+      `SELECT * FROM Users WHERE username = $username`,
+      { $username: username },
+      (error, rows) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(rows.length > 0);
+        }
+      }
+    );
+  }).then((exists) => exists);
 }
+
 async function validateLogIn(username, password){
     const sql = 'SELECT * FROM users WHERE username = $username AND password = $password'
     const params = {$username: username, $password: password}
 
-    return new Promise((resolve, reject)=>{
-        db.all(sql, params, (error)=>{
-            if(error){reject(error)}else{resolve()}
+    return new Promise((resolve, reject, row)=>{
+        db.get(sql, params, (error)=>{
+            if(error){reject(error)}else resolve(row ? true : false);
         })
     })
 }
@@ -101,8 +118,9 @@ async function getPassByUserName(username){
     });
   });
 }
+//printAllUsers()
 
-module.exports = {registerUser, userExists, getPassByUserName, validateLogIn}
+module.exports = {registerUser, userExists, getPassByUserName, validateLogIn, getAllUsers, getUser}
 
 
 
