@@ -1,7 +1,7 @@
-# start with cloneing the repo with this command
+# start with cloning the repo with this command
 
 ```
-git clone 
+git clone https://github.com/Asom98/lab4AlsheikhKassem.git
 ```
 
 # start downloading the node moudels needed.
