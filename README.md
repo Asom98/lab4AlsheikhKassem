@@ -4,7 +4,7 @@
 git clone https://github.com/Asom98/lab4AlsheikhKassem.git
 ```
 
-# start downloading the node moudels needed.
+# start downloading the node moudels needed with
 ```
 npm install 
 ```
