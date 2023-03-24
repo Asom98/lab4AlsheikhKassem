@@ -64,16 +64,19 @@ async function getUser(username) {
   });
 }
 
-async function registerUser(userName, password){
-    const sql = 'INSERT INTO users (username, password) VALUES ($username, $password)'
-    const params ={$username: userName, $password: password}
-
-    return new Promise((resolve, reject)=>{
-        db.run(sql, params, (error)=>{
-            if(error){reject(error)}else{resolve()}
-        })
-    })
+function registerUser(id, role, username, password) {
+    return new Promise((resolve, reject) => {
+      db.run(
+        'INSERT INTO Users (id, role, username, password) VALUES (?, ?, ?, ?)',
+        [id, role, username, password],
+        function (err) {
+          if (err) reject(err);
+          else resolve(true);
+        }
+      );
+    });
 }
+
 
 async function userExists(username) {
   return new Promise((resolve, reject) => {
@@ -91,15 +94,21 @@ async function userExists(username) {
   }).then((exists) => exists);
 }
 
-async function validateLogIn(username, password){
-    const sql = 'SELECT * FROM users WHERE username = $username AND password = $password'
-    const params = {$username: username, $password: password}
+async function validateLogIn(username, password) {
+  const sql = 'SELECT COUNT(*) AS count FROM Users WHERE username = ? AND password = ?';
+  const params = [username, password];
 
-    return new Promise((resolve, reject, row)=>{
-        db.get(sql, params, (error)=>{
-            if(error){reject(error)}else resolve(row ? true : false);
-        })
-    })
+  return new Promise((resolve, reject) => {
+    db.get(sql, params, (error, row) => {
+      if (error) {
+        reject(error);
+      } else {
+        const count = row.count || 0;
+        const isValid = count > 0;
+        resolve(isValid);
+      }
+    });
+  });
 }
 
 async function getPassByUserName(username){
@@ -118,9 +127,31 @@ async function getPassByUserName(username){
     });
   });
 }
-//printAllUsers()
 
-module.exports = {registerUser, userExists, getPassByUserName, validateLogIn, getAllUsers, getUser}
+async function getUserById(id) {
+  return new Promise((resolve, reject) => {
+    db.get('SELECT * FROM Users WHERE id = ?', [id], (err, row) => {
+      if (err) reject(err);
+      else resolve(row);
+    });
+  });
+}
+
+async function getUserByName(username) {
+  return new Promise((resolve, reject) => {
+    db.get(
+      'SELECT * FROM Users WHERE username = ?',
+      [username],
+      (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      }
+    );
+  });
+}
+printAllUsers()
+
+module.exports = {registerUser, userExists, getPassByUserName, validateLogIn, getAllUsers, getUser, getUserById, getUserByName}
 
 
 
